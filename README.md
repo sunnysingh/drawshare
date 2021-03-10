@@ -23,3 +23,11 @@ This will install the version specified in the [`.nvmrc` file](./.nvmrc).
 1. `cd app`
 2. `npm install`
 3. `npm start`
+
+### 🦢 Feathers API
+
+⚡️ **Quick start**
+
+1. `cd api`
+2. `npm install`
+3. `npm start`
