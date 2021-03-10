@@ -1,4 +1,4 @@
-# Drawshare
+# Drawshare 🖌
 
 Drawshare is an app for sharing sketches.
 
