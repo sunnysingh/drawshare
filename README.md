@@ -16,15 +16,15 @@ nvm install
 
 This will install the version specified in the [`.nvmrc` file](./.nvmrc).
 
-### ⚛️ React App
+### ⚛️ Next.js Web App
 
 ⚡️ **Quick start**:
 
-1. `cd app`
+1. `cd web`
 2. `npm install`
-3. `npm start`
+3. `npm run dev`
 
-### 🦢 Feathers API
+### 🦢 Feathers API Server
 
 ⚡️ **Quick start**
 
