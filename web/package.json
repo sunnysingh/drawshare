@@ -4,7 +4,8 @@
     "dev": "next",
     "start": "next",
     "build": "next build",
-    "start-production": "next start"
+    "start-production": "next start",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "next": "^10.0.8",
