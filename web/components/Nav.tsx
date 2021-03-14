@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { FunctionComponent } from "react";
 
-const Nav = () => (
+export const Nav: FunctionComponent = () => (
   <nav>
     <ul>
       <li>
@@ -16,5 +17,3 @@ const Nav = () => (
     </ul>
   </nav>
 );
-
-export default Nav;
