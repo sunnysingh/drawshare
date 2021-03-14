@@ -70,7 +70,9 @@ export function Nav() {
                 display={{ base: "none", md: "flex" }}
               >
                 {LINKS.map(({ href, label }) => (
-                  <NavLink href={href}>{label}</NavLink>
+                  <NavLink key={`${href}-${label}`} href={href}>
+                    {label}
+                  </NavLink>
                 ))}
               </HStack>
             </HStack>
@@ -106,7 +108,9 @@ export function Nav() {
             <Box pb={4}>
               <Stack as={"nav"} spacing={4}>
                 {LINKS.map(({ href, label }) => (
-                  <NavLink href={href}>{label}</NavLink>
+                  <NavLink key={`${href}-${label}`} href={href}>
+                    {label}
+                  </NavLink>
                 ))}
               </Stack>
             </Box>
