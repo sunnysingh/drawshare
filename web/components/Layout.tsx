@@ -1,4 +1,5 @@
 import { FunctionComponent, ReactNode } from "react";
+import { Box, Container } from "@chakra-ui/react";
 
 import { Head, Nav } from "./index";
 
@@ -11,6 +12,10 @@ export const Layout: FunctionComponent<LayoutProps> = ({ children, title }) => (
   <>
     <Head title={title} />
     <Nav />
-    <main>{children}</main>
+    <Container maxW="container.xl">
+      <Box py={4} as="main">
+        {children}
+      </Box>
+    </Container>
   </>
 );
