@@ -123,9 +123,9 @@ export const Draw: FunctionComponent = () => {
     await api
       .service('drawings')
       .create(drawing)
-      .then((response: { _id: string }) => {
+      .then(() => {
         if (drawing.isPublic) router.push('/');
-        else router.push(`/draw/${response._id}`);
+        else router.push('/private');
       })
       .catch((error: Error) => {
         setIsSaving(false);
