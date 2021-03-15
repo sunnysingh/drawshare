@@ -88,6 +88,7 @@ export function useDrawingDetail(id: string) {
 type ReplayedDrawingProps = {
   steps: Step[];
   username: string;
+  drawTime: number;
   createdAt: number;
 };
 
