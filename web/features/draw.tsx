@@ -47,6 +47,7 @@ export const Draw: FunctionComponent = () => {
   const [strokeWidth, setStrokeWidth] = useState(5);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPublic, setIsPublic] = useState(true);
+  const [isErasing, setIsErasing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,9 +69,11 @@ export const Draw: FunctionComponent = () => {
 
     context.beginPath();
 
+    const strokeStyle = isErasing ? '#FFFFFF' : color;
+
     context.lineWidth = strokeWidth;
     context.lineCap = 'round';
-    context.strokeStyle = color;
+    context.strokeStyle = strokeStyle;
 
     const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
 
@@ -88,7 +91,7 @@ export const Draw: FunctionComponent = () => {
       fromY: position.y,
       toX,
       toY,
-      color,
+      color: strokeStyle,
       strokeWidth,
     });
 
@@ -210,7 +213,7 @@ export const Draw: FunctionComponent = () => {
             <HexColorPicker color={color} onChange={setColor} />
           </Box>
 
-          <FormControl>
+          <FormControl mb={8}>
             <FormLabel htmlFor="strokeWidth" mb="0">
               Stroke Width
             </FormLabel>
@@ -227,6 +230,20 @@ export const Draw: FunctionComponent = () => {
                 <NumberDecrementStepper />
               </NumberInputStepper>
             </NumberInput>
+          </FormControl>
+
+          <FormControl display="flex" alignItems="center" mb={8}>
+            <FormLabel htmlFor="eraser" mb="0">
+              Eraser
+            </FormLabel>
+            <Switch
+              id="eraser"
+              size="lg"
+              isChecked={isErasing}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setIsErasing(event.target.checked)
+              }
+            />
           </FormControl>
         </WrapItem>
       )}
