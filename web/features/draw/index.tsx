@@ -11,8 +11,6 @@ import {
   Button,
   Wrap,
   WrapItem,
-  Alert,
-  AlertDescription,
   FormControl,
   FormLabel,
   NumberInput,
@@ -23,24 +21,15 @@ import {
   Switch,
 } from '@chakra-ui/react';
 import { HexColorPicker } from 'react-colorful';
-import { useRouter } from 'next/router';
 
 import { useAuthContext } from 'contexts/auth';
-import { api } from 'api';
 
-type StepItem = {
-  strokeWidth: number;
-  color: string;
-  fromX: number;
-  fromY: number;
-  toX: number;
-  toY: number;
-};
+import { useSaveDrawing } from './hooks';
+import { StepItem } from './types';
 
 export const Draw: FunctionComponent = () => {
   const auth = useAuthContext();
-
-  const router = useRouter();
+  const { isSaving, save } = useSaveDrawing();
 
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState('#000000');
@@ -48,8 +37,6 @@ export const Draw: FunctionComponent = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPublic, setIsPublic] = useState(true);
   const [isErasing, setIsErasing] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const steps = useRef<StepItem[]>([]);
   const startTime = useRef<number | null>(null);
@@ -102,38 +89,22 @@ export const Draw: FunctionComponent = () => {
     context.stroke();
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const endTime = Number(new Date());
     const drawing = {
-      username: auth.username,
+      username: auth.username as string,
       steps: steps.current,
       createdAt: Number(new Date()),
       drawTime: endTime - (startTime.current || 0),
       isPublic,
     };
 
-    if (drawing.steps.length === 0) {
-      setError('You should draw something first.');
-      return;
-    }
+    if (drawing.steps.length === 0) return;
 
-    setIsSaving(true);
-    setError(null);
-
-    await api
-      .service('drawings')
-      .create(drawing)
-      .then(() => {
-        if (drawing.isPublic) router.push('/');
-        else router.push('/private');
-      })
-      .catch((error: Error) => {
-        setIsSaving(false);
-        setError(error.message);
-      });
+    save(drawing);
   };
 
-  const handleClear = (event: MouseEvent) => {
+  const handleClear = () => {
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -141,8 +112,6 @@ export const Draw: FunctionComponent = () => {
 
     steps.current = [];
     startTime.current = null;
-
-    setError(null);
   };
 
   return (
@@ -163,12 +132,6 @@ export const Draw: FunctionComponent = () => {
             height="400"
           />
         </Box>
-
-        {error && (
-          <Alert status="error" mb={4}>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
 
         {context && (
           <>
