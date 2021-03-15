@@ -15,6 +15,11 @@ import {
   AlertDescription,
   FormControl,
   FormLabel,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
   Switch,
 } from '@chakra-ui/react';
 import { HexColorPicker } from 'react-colorful';
@@ -24,6 +29,7 @@ import { useAuthContext } from 'contexts/auth';
 import { api } from 'api';
 
 type StepItem = {
+  strokeWidth: number;
   color: string;
   fromX: number;
   fromY: number;
@@ -38,6 +44,7 @@ export const Draw: FunctionComponent = () => {
 
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState('#000000');
+  const [strokeWidth, setStrokeWidth] = useState(5);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isPublic, setIsPublic] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -61,7 +68,7 @@ export const Draw: FunctionComponent = () => {
 
     context.beginPath();
 
-    context.lineWidth = 5;
+    context.lineWidth = strokeWidth;
     context.lineCap = 'round';
     context.strokeStyle = color;
 
@@ -82,6 +89,7 @@ export const Draw: FunctionComponent = () => {
       toX,
       toY,
       color,
+      strokeWidth,
     });
 
     setPosition({ x: toX, y: toY });
@@ -197,8 +205,29 @@ export const Draw: FunctionComponent = () => {
       </WrapItem>
 
       {context && (
-        <WrapItem>
-          <HexColorPicker color={color} onChange={setColor} />
+        <WrapItem display="block">
+          <Box mb={8}>
+            <HexColorPicker color={color} onChange={setColor} />
+          </Box>
+
+          <FormControl>
+            <FormLabel htmlFor="strokeWidth" mb="0">
+              Stroke Width
+            </FormLabel>
+            <NumberInput
+              id="strokeWidth"
+              value={strokeWidth}
+              max={30}
+              min={5}
+              onChange={(value) => setStrokeWidth(Number(value))}
+            >
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </FormControl>
         </WrapItem>
       )}
     </Wrap>

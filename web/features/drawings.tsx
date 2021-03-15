@@ -107,7 +107,7 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
 
     steps.forEach((step) => {
       context.beginPath();
-      context.lineWidth = 5;
+      context.lineWidth = step.strokeWidth;
       context.lineCap = 'round';
       context.strokeStyle = step.color;
       context.moveTo(step.fromX, step.fromY);
