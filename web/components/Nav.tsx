@@ -29,7 +29,7 @@ const LINKS = [
     href: '/',
   },
   {
-    label: 'Draw',
+    label: 'Create',
     href: '/draw',
     isAuthenticatedOnly: true,
   },
