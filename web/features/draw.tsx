@@ -38,8 +38,9 @@ export const Draw: FunctionComponent = () => {
   const handleMouseMove = (event: MouseEvent) => {
     if (!context) return;
 
-    // left mouse button is pressed
-    if (event.buttons !== 1) return;
+    const isLeftMouseButtonPressed = event.buttons !== 1;
+
+    if (isLeftMouseButtonPressed) return;
 
     context.beginPath();
 
@@ -76,6 +77,7 @@ export const Draw: FunctionComponent = () => {
       public: true,
     };
 
+    // TODO: HANDLE SAVE ERRORS
     await api.service('drawings').create(drawing);
 
     router.push('/');
