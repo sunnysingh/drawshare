@@ -4,26 +4,34 @@ import {
   useRef,
   useState,
   useEffect,
-} from "react";
-import { Box, Button, HStack } from "@chakra-ui/react";
-import { HexColorPicker } from "react-colorful";
+} from 'react';
+import { Box, Button, HStack } from '@chakra-ui/react';
+import { HexColorPicker } from 'react-colorful';
+import { useRouter } from 'next/router';
 
-type HistoryItem = {
+import { useAuthContext } from 'contexts/auth';
+import { api } from 'api';
+
+type StepItem = {
   color: string;
-  x: number;
-  y: number;
+  fromX: number;
+  fromY: number;
+  toX: number;
+  toY: number;
 };
 
 export const Draw: FunctionComponent = () => {
+  const auth = useAuthContext();
+  const router = useRouter();
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const [color, setColor] = useState("#000000");
-  const history = useRef<HistoryItem[]>([]);
+  const [color, setColor] = useState('#000000');
+  const steps = useRef<StepItem[]>([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    const context = canvasRef?.current?.getContext("2d");
+    const context = canvasRef?.current?.getContext('2d');
     if (context) setContext(context);
   }, []);
 
@@ -33,36 +41,51 @@ export const Draw: FunctionComponent = () => {
     // left mouse button is pressed
     if (event.buttons !== 1) return;
 
-    context.beginPath(); // begin
+    context.beginPath();
 
     context.lineWidth = 5;
-    context.lineCap = "round";
+    context.lineCap = 'round';
     context.strokeStyle = color;
 
     const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
 
     context.moveTo(position.x, position.y);
 
-    const newX = event.clientX - rect.left;
-    const newY = event.clientY - rect.top;
+    const toX = event.clientX - rect.left;
+    const toY = event.clientY - rect.top;
 
-    setPosition({ x: newX, y: newY });
-    history.current.push({ x: newX, y: newY, color });
+    steps.current.push({
+      fromX: position.x,
+      fromY: position.y,
+      toX,
+      toY,
+      color,
+    });
 
-    context.lineTo(newX, newY);
+    setPosition({ x: toX, y: toY });
+
+    context.lineTo(toX, toY);
 
     context.stroke();
   };
 
-  const handleSave = () => {
-    console.log(history);
+  const handleSave = async () => {
+    const drawing = {
+      username: auth.username,
+      steps: steps.current,
+      public: true,
+    };
+
+    await api.service('drawings').create(drawing);
+
+    router.push('/');
   };
 
   const handleClear = (event: MouseEvent) => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     context?.clearRect(0, 0, canvas.width, canvas.height);
-    history.current = [];
+    steps.current = [];
   };
 
   return (
@@ -113,7 +136,7 @@ export const Draw: FunctionComponent = () => {
 
       {context && (
         <Box>
-          <img ref={imageRef} style={{ display: "none" }} />
+          <img ref={imageRef} style={{ display: 'none' }} />
         </Box>
       )}
     </HStack>
