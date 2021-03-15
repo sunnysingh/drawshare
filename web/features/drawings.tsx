@@ -7,7 +7,7 @@ import {
   AlertDescription,
   Spinner,
 } from '@chakra-ui/react';
-import { formatDistanceToNow } from 'date-fns';
+import { format } from 'date-fns';
 
 import { Link } from 'components';
 import { api } from 'api';
@@ -120,7 +120,8 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
         <canvas ref={canvasRef} width={400} height={400} />
       </Box>
       <Box>
-        Created {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
+        Created {format(new Date(createdAt), 'LLLL do, yyyy')} at{' '}
+        {format(new Date(createdAt), 'HH:mm a')}
       </Box>
     </div>
   );
