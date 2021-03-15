@@ -11,14 +11,11 @@ const DrawDetailPage: FunctionComponent = () => {
   const id = router.query.id as string;
 
   return (
-    <Layout title="Private Drawing">
+    <Layout title="Drawing">
       <Heading as="h1" size="lg" mb={4}>
-        Private Drawing
+        A Drawing
       </Heading>
-      <Box mb={4}>
-        This drawing is not visible in the gallery, but anyone with access to
-        this URL can see it.
-      </Box>
+      <Box mb={4}>Share this drawing with someone! It's a unique URL.</Box>
       <AuthenticatedOnly>
         <DrawingDetail id={id} />
       </AuthenticatedOnly>

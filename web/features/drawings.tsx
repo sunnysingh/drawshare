@@ -181,9 +181,11 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
       </Box>
 
       <Box>
-        {format(new Date(createdAt), 'LLL do yyyy')} at{' '}
-        {format(new Date(createdAt), 'HH:mm a')} in{' '}
-        {drawTimeSeconds > 0 ? `${drawTimeSeconds}s` : `${drawTime}ms`}
+        <Link href={`/draw/${id}`}>
+          {format(new Date(createdAt), 'LLL do yyyy')} at{' '}
+          {format(new Date(createdAt), 'HH:mm a')}
+        </Link>{' '}
+        in {drawTimeSeconds > 0 ? `${drawTimeSeconds}s` : `${drawTime}ms`}
       </Box>
 
       {isDeletable && (
