@@ -17,7 +17,7 @@ type HistoryItem = {
 export const Draw: FunctionComponent = () => {
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState("#000000");
-  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const history = useRef<HistoryItem[]>([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -47,7 +47,7 @@ export const Draw: FunctionComponent = () => {
     const newY = event.clientY - rect.top;
 
     setPosition({ x: newX, y: newY });
-    setHistory([...history, { x: newX, y: newY, color }]);
+    history.current.push({ x: newX, y: newY, color });
 
     context.lineTo(newX, newY);
 
@@ -55,14 +55,14 @@ export const Draw: FunctionComponent = () => {
   };
 
   const handleSave = () => {
-    alert("Not implemented yet!");
+    console.log(history);
   };
 
   const handleClear = (event: MouseEvent) => {
     if (!canvasRef.current) return;
     const canvas = canvasRef.current;
     context?.clearRect(0, 0, canvas.width, canvas.height);
-    setHistory([]);
+    history.current = [];
   };
 
   return (
