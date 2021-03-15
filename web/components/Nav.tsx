@@ -1,5 +1,6 @@
 import { FunctionComponent, ReactNode } from 'react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import {
   Container,
   Box,
@@ -42,14 +43,20 @@ const LINKS = [
 type NavLinkProps = {
   children: ReactNode;
   href: string;
+  isActive: boolean;
 };
 
-const NavLink: FunctionComponent<NavLinkProps> = ({ children, href }) => (
+const NavLink: FunctionComponent<NavLinkProps> = ({
+  children,
+  href,
+  isActive,
+}) => (
   <NextLink href={href} passHref>
     <Link
       px={2}
       py={1}
       rounded={'md'}
+      bg={isActive ? useColorModeValue('gray.200', 'gray.700') : 'transparent'}
       _hover={{
         textDecoration: 'none',
         bg: useColorModeValue('gray.200', 'gray.700'),
@@ -63,6 +70,7 @@ const NavLink: FunctionComponent<NavLinkProps> = ({ children, href }) => (
 export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useAuthContext();
+  const router = useRouter();
 
   const renderNavLink = ({
     href,
@@ -75,7 +83,11 @@ export function Nav() {
   }) => {
     if (isAuthenticatedOnly && !user.isAuthenticated) return null;
     return (
-      <NavLink key={`${href}-${label}`} href={href}>
+      <NavLink
+        key={`${href}-${label}`}
+        href={href}
+        isActive={router.pathname === href}
+      >
         {label}
       </NavLink>
     );
@@ -94,9 +106,6 @@ export function Nav() {
               onClick={isOpen ? onClose : onOpen}
             />
             <HStack spacing={8} alignItems={'center'}>
-              <NextLink href="/">
-                <a>Drawshare</a>
-              </NextLink>
               <HStack
                 as={'nav'}
                 spacing={4}
