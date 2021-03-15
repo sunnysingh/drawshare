@@ -5,7 +5,7 @@ import {
   useState,
   useEffect,
 } from 'react';
-import { Box, Button, HStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Alert, AlertDescription } from '@chakra-ui/react';
 import { HexColorPicker } from 'react-colorful';
 import { useRouter } from 'next/router';
 
@@ -22,13 +22,17 @@ type StepItem = {
 
 export const Draw: FunctionComponent = () => {
   const auth = useAuthContext();
+
   const router = useRouter();
+
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState('#000000');
-  const steps = useRef<StepItem[]>([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const steps = useRef<StepItem[]>([]);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     const context = canvasRef?.current?.getContext('2d');
@@ -77,17 +81,33 @@ export const Draw: FunctionComponent = () => {
       public: true,
     };
 
-    // TODO: HANDLE SAVE ERRORS
-    await api.service('drawings').create(drawing);
+    if (drawing.steps.length === 0) {
+      setError('You should draw something first.');
+      return;
+    }
 
-    router.push('/');
+    setIsSaving(true);
+    setError(null);
+
+    await api
+      .service('drawings')
+      .create(drawing)
+      .then(() => router.push('/'))
+      .catch((error: Error) => {
+        setIsSaving(false);
+        setError(error.message);
+      });
   };
 
   const handleClear = (event: MouseEvent) => {
     if (!canvasRef.current) return;
+
     const canvas = canvasRef.current;
     context?.clearRect(0, 0, canvas.width, canvas.height);
+
     steps.current = [];
+
+    setError(null);
   };
 
   return (
@@ -111,10 +131,16 @@ export const Draw: FunctionComponent = () => {
                 y: event.clientY - rect.top,
               });
             }}
-            width="400%"
+            width="400"
             height="400"
           />
         </Box>
+
+        {error && (
+          <Alert status="error" mb={4}>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         {context && (
           <>
@@ -123,11 +149,17 @@ export const Draw: FunctionComponent = () => {
               variant="solid"
               mr={4}
               onClick={handleSave}
+              isLoading={isSaving}
             >
               Save
             </Button>
 
-            <Button colorScheme="teal" variant="outline" onClick={handleClear}>
+            <Button
+              colorScheme="teal"
+              variant="outline"
+              onClick={handleClear}
+              disabled={isSaving}
+            >
               Clear
             </Button>
           </>
@@ -135,12 +167,6 @@ export const Draw: FunctionComponent = () => {
       </Box>
 
       {context && <HexColorPicker color={color} onChange={setColor} />}
-
-      {context && (
-        <Box>
-          <img ref={imageRef} style={{ display: 'none' }} />
-        </Box>
-      )}
     </HStack>
   );
 };
