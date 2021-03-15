@@ -4,13 +4,7 @@ import { Box } from '@chakra-ui/react';
 import { Link } from 'components';
 import { useAuthContext } from 'contexts/auth';
 
-type AuthenticatedOnlyProps = {
-  children: ReactNode;
-};
-
-export const AuthenticatedOnly: FunctionComponent<AuthenticatedOnlyProps> = ({
-  children,
-}) => {
+export const AuthenticatedOnly: FunctionComponent = ({ children }) => {
   const { isAuthenticated } = useAuthContext();
 
   if (!isAuthenticated)
@@ -21,5 +15,5 @@ export const AuthenticatedOnly: FunctionComponent<AuthenticatedOnlyProps> = ({
       </Box>
     );
 
-  return children;
+  return <>{children}</>;
 };
