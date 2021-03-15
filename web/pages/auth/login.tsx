@@ -35,7 +35,7 @@ const Loginpage: FunctionComponent = () => {
             strategy: "local",
           })
           .then(() => {
-            router.push("/dashboard");
+            router.push("/draw");
           })
           .catch((error: Error) => {
             actions.setSubmitting(false);

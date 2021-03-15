@@ -24,8 +24,12 @@ import { api } from "api";
 
 const LINKS = [
   {
-    label: "Home",
+    label: "Gallery",
     href: "/",
+  },
+  {
+    label: "Draw",
+    href: "/draw",
   },
 ];
 
@@ -67,7 +71,9 @@ export function Nav() {
               onClick={isOpen ? onClose : onOpen}
             />
             <HStack spacing={8} alignItems={"center"}>
-              <Box>Drawshare</Box>
+              <NextLink href="/">
+                <a>Drawshare</a>
+              </NextLink>
               <HStack
                 as={"nav"}
                 spacing={4}

@@ -33,7 +33,7 @@ const RegisterPage: FunctionComponent = () => {
             ...values,
             strategy: "local",
           });
-          router.push("/dashboard");
+          router.push("/draw");
         })
         .catch((error: Error) => {
           actions.setSubmitting(false);
