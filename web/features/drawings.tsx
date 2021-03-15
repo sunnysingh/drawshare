@@ -14,6 +14,7 @@ import { api } from 'api';
 import { useAuthContext } from 'contexts/auth';
 
 type Step = {
+  strokeWidth: number;
   color: string;
   fromX: number;
   fromY: number;
