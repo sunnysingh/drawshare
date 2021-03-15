@@ -37,7 +37,7 @@ type DrawingsListResponse = {
   data: Drawing[];
 };
 
-export function useDrawingsList() {
+export function useDrawingsList(isPublic = true) {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
@@ -52,7 +52,7 @@ export function useDrawingsList() {
       .service('drawings')
       .find({
         query: {
-          isPublic: true,
+          isPublic,
           $sort: {
             createdAt: -1,
           },
@@ -241,9 +241,15 @@ export const DrawingDetail: FunctionComponent<DrawingDetailProps> = ({
   );
 };
 
-export const DrawingsList: FunctionComponent = () => {
+type DrawingsListProps = {
+  isPublic?: boolean;
+};
+
+export const DrawingsList: FunctionComponent<DrawingsListProps> = ({
+  isPublic = true,
+}) => {
   const { isAuthenticated, username } = useAuthContext();
-  const { isFetching, error, drawings, refetch } = useDrawingsList();
+  const { isFetching, error, drawings, refetch } = useDrawingsList(isPublic);
 
   if (isFetching) {
     return <Spinner size="xl" />;

@@ -32,6 +32,11 @@ const LINKS = [
     href: '/draw',
     isAuthenticatedOnly: true,
   },
+  {
+    label: 'Private Drawings',
+    href: '/private',
+    isAuthenticatedOnly: true,
+  },
 ];
 
 type NavLinkProps = {
