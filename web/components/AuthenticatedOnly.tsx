@@ -1,11 +1,11 @@
-import { FunctionComponent, ReactElement } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 import { Box } from '@chakra-ui/react';
 
 import { Link } from 'components';
 import { useAuthContext } from 'contexts/auth';
 
 type AuthenticatedOnlyProps = {
-  children: ReactElement;
+  children: ReactNode;
 };
 
 export const AuthenticatedOnly: FunctionComponent<AuthenticatedOnlyProps> = ({

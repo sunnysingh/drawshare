@@ -1,11 +1,21 @@
 import {
   FunctionComponent,
   MouseEvent,
+  ChangeEvent,
   useRef,
   useState,
   useEffect,
 } from 'react';
-import { Box, Button, HStack, Alert, AlertDescription } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  HStack,
+  Alert,
+  AlertDescription,
+  FormControl,
+  FormLabel,
+  Switch,
+} from '@chakra-ui/react';
 import { HexColorPicker } from 'react-colorful';
 import { useRouter } from 'next/router';
 
@@ -28,6 +38,7 @@ export const Draw: FunctionComponent = () => {
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [color, setColor] = useState('#000000');
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isPublic, setIsPublic] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -78,7 +89,8 @@ export const Draw: FunctionComponent = () => {
     const drawing = {
       username: auth.username,
       steps: steps.current,
-      public: true,
+      createdAt: Number(new Date()),
+      isPublic,
     };
 
     if (drawing.steps.length === 0) {
@@ -92,7 +104,10 @@ export const Draw: FunctionComponent = () => {
     await api
       .service('drawings')
       .create(drawing)
-      .then(() => router.push('/'))
+      .then((response: { _id: string }) => {
+        if (drawing.isPublic) router.push('/');
+        else router.push(`/draw/${response._id}`);
+      })
       .catch((error: Error) => {
         setIsSaving(false);
         setError(error.message);
@@ -137,6 +152,19 @@ export const Draw: FunctionComponent = () => {
 
         {context && (
           <>
+            <FormControl display="flex" alignItems="center" mb={4}>
+              <FormLabel htmlFor="isPublic" mb="0">
+                Public Drawing
+              </FormLabel>
+              <Switch
+                id="isPublic"
+                isChecked={isPublic}
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  setIsPublic(event.target.checked)
+                }
+              />
+            </FormControl>
+
             <Button
               colorScheme="teal"
               variant="solid"

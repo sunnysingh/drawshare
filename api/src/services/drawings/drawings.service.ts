@@ -8,14 +8,15 @@ import hooks from './drawings.hooks';
 // Add this service to the service type index
 declare module '../../declarations' {
   interface ServiceTypes {
-    'drawings': Drawings & ServiceAddons<any>;
+    drawings: Drawings & ServiceAddons<any>;
   }
 }
 
 export default function (app: Application): void {
   const options = {
     Model: createModel(app),
-    paginate: app.get('paginate')
+    paginate: app.get('paginate'),
+    whitelist: ['isPublic'],
   };
 
   // Initialize our service with any options it requires

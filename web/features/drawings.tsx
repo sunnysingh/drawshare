@@ -27,11 +27,11 @@ type Drawing = {
   _id: string;
 };
 
-type DrawingsResponse = {
+type DrawingsListResponse = {
   data: Drawing[];
 };
 
-export function useDrawings() {
+export function useDrawingsList() {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
@@ -39,8 +39,15 @@ export function useDrawings() {
   useEffect(() => {
     api
       .service('drawings')
-      .find()
-      .then((drawings: DrawingsResponse) => {
+      .find({
+        query: {
+          isPublic: true,
+          $sort: {
+            createdAt: -1,
+          },
+        },
+      })
+      .then((drawings: DrawingsListResponse) => {
         setIsFetching(false);
         setDrawings(drawings?.data || []);
       })
@@ -51,6 +58,28 @@ export function useDrawings() {
   }, [api, setDrawings]);
 
   return { isFetching, error, drawings };
+}
+
+export function useDrawingDetail(id: string) {
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [drawing, setDrawing] = useState<Drawing | null>(null);
+
+  useEffect(() => {
+    api
+      .service('drawings')
+      .get(id)
+      .then((drawing: Drawing) => {
+        setIsFetching(false);
+        setDrawing(drawing);
+      })
+      .catch((error: Error) => {
+        setIsFetching(false);
+        setError(error.message);
+      });
+  }, [api, setDrawing]);
+
+  return { isFetching, error, drawing };
 }
 
 type ReplayedDrawingProps = {
@@ -90,9 +119,41 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
   );
 };
 
-export const Drawings: FunctionComponent = () => {
+type DrawingDetailProps = {
+  id: string;
+};
+
+export const DrawingDetail: FunctionComponent<DrawingDetailProps> = ({
+  id,
+}) => {
+  const { isFetching, error, drawing } = useDrawingDetail(id);
+
+  if (isFetching) {
+    return <Spinner size="xl" />;
+  }
+
+  if (error) {
+    return (
+      <Alert status="error" mb={4}>
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (!drawing) {
+    return (
+      <Alert status="error" mb={4}>
+        <AlertDescription>Drawing data is not available.</AlertDescription>
+      </Alert>
+    );
+  }
+
+  return <ReplayedDrawing steps={drawing.steps} username={drawing.username} />;
+};
+
+export const DrawingsList: FunctionComponent = () => {
   const { isAuthenticated } = useAuthContext();
-  const { isFetching, error, drawings } = useDrawings();
+  const { isFetching, error, drawings } = useDrawingsList();
 
   if (isFetching) {
     return <Spinner size="xl" />;
