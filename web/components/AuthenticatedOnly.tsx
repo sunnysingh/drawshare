@@ -1,9 +1,8 @@
-import { FunctionComponent, ReactElement } from "react";
-import NextLink from "next/link";
-import { Box, Link } from "@chakra-ui/react";
+import { FunctionComponent, ReactElement } from 'react';
+import { Box } from '@chakra-ui/react';
 
-import { useAuthContext } from "contexts/auth";
-import { Draw } from "features/draw";
+import { Link } from 'components';
+import { useAuthContext } from 'contexts/auth';
 
 type AuthenticatedOnlyProps = {
   children: ReactElement;
@@ -17,15 +16,8 @@ export const AuthenticatedOnly: FunctionComponent<AuthenticatedOnlyProps> = ({
   if (!isAuthenticated)
     return (
       <Box>
-        Please{" "}
-        <NextLink href="/auth/login" passHref>
-          <Link color="teal.500">sign in</Link>
-        </NextLink>{" "}
-        or{" "}
-        <NextLink href="/auth/register" passHref>
-          <Link color="teal.500">create an account</Link>
-        </NextLink>{" "}
-        to draw.
+        Please <Link href="/auth/login">sign in</Link> or{' '}
+        <Link href="/auth/register">create an account</Link> to draw.
       </Box>
     );
 

@@ -1,7 +1,16 @@
 import { FunctionComponent, useEffect, useState, useRef } from 'react';
-import { Box, Wrap, WrapItem } from '@chakra-ui/react';
+import {
+  Box,
+  Wrap,
+  WrapItem,
+  Alert,
+  AlertDescription,
+  Spinner,
+} from '@chakra-ui/react';
 
+import { Link } from 'components';
 import { api } from 'api';
+import { useAuthContext } from 'contexts/auth';
 
 type Step = {
   color: string;
@@ -23,6 +32,8 @@ type DrawingsResponse = {
 };
 
 export function useDrawings() {
+  const [isFetching, setIsFetching] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
 
   useEffect(() => {
@@ -30,11 +41,16 @@ export function useDrawings() {
       .service('drawings')
       .find()
       .then((drawings: DrawingsResponse) => {
+        setIsFetching(false);
         setDrawings(drawings?.data || []);
+      })
+      .catch((error: Error) => {
+        setIsFetching(false);
+        setError(error.message);
       });
   }, [api, setDrawings]);
 
-  return drawings;
+  return { isFetching, error, drawings };
 }
 
 type ReplayedDrawingProps = {
@@ -75,7 +91,32 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
 };
 
 export const Drawings: FunctionComponent = () => {
-  const drawings = useDrawings();
+  const { isAuthenticated } = useAuthContext();
+  const { isFetching, error, drawings } = useDrawings();
+
+  if (isFetching) {
+    return <Spinner size="xl" />;
+  }
+
+  if (error) {
+    return (
+      <Alert status="error" mb={4}>
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (drawings.length === 0) {
+    return (
+      <Box>
+        There are no drawings yet.{' '}
+        <Link href={isAuthenticated ? '/draw' : '/auth/register'}>
+          Why not create one?
+        </Link>
+      </Box>
+    );
+  }
+
   return (
     <Wrap spacing={4} flexWrap="wrap">
       {drawings.map((drawing) => (
