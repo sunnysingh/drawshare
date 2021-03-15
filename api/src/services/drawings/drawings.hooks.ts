@@ -1,5 +1,6 @@
 import * as authentication from '@feathersjs/authentication';
 import { HookContext } from '@feathersjs/feathers';
+import { Forbidden } from '@feathersjs/errors';
 // Don't remove this comment. It's needed to format import lines nicely.
 
 const { authenticate } = authentication.hooks;
@@ -19,15 +20,30 @@ const parseQuery = () => (context: HookContext) => {
   return context;
 };
 
+const setUserId = () => (context: HookContext) => {
+  context.data.userId = context.params.user?._id;
+  return context;
+};
+
+const isOwner = () => async (context: HookContext) => {
+  const drawing = await context.app.service('drawings').get(context.id);
+
+  if (drawing.userId !== context.params.user?._id) {
+    throw new Forbidden('Only drawing owners can modify.');
+  }
+
+  return context;
+};
+
 export default {
   before: {
     all: [],
     find: [parseQuery()],
     get: [],
-    create: [authenticate('jwt')],
-    update: [authenticate('jwt')],
-    patch: [authenticate('jwt')],
-    remove: [authenticate('jwt')],
+    create: [authenticate('jwt'), setUserId()],
+    update: [authenticate('jwt'), isOwner()],
+    patch: [authenticate('jwt'), isOwner()],
+    remove: [authenticate('jwt'), isOwner()],
   },
 
   after: {

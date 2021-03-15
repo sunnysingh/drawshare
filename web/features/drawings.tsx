@@ -6,6 +6,8 @@ import {
   Alert,
   AlertDescription,
   Spinner,
+  Button,
+  useToast,
 } from '@chakra-ui/react';
 import { format } from 'date-fns';
 
@@ -39,8 +41,13 @@ export function useDrawingsList() {
   const [isFetching, setIsFetching] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [drawings, setDrawings] = useState<Drawing[]>([]);
+  const [shouldFetch, setShouldFetch] = useState(true);
 
   useEffect(() => {
+    if (!shouldFetch) return;
+
+    setShouldFetch(false);
+
     api
       .service('drawings')
       .find({
@@ -59,9 +66,13 @@ export function useDrawingsList() {
         setIsFetching(false);
         setError(error.message);
       });
-  }, [api, setDrawings]);
+  }, [api, setDrawings, shouldFetch]);
 
-  return { isFetching, error, drawings };
+  const refetch = () => {
+    setShouldFetch(true);
+  };
+
+  return { isFetching, error, drawings, refetch };
 }
 
 export function useDrawingDetail(id: string) {
@@ -86,19 +97,61 @@ export function useDrawingDetail(id: string) {
   return { isFetching, error, drawing };
 }
 
+export function useDeleteDrawing() {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const toast = useToast();
+
+  const handleDelete = (id: string, onSuccess: (id?: string) => void) => {
+    setIsDeleting(true);
+    api
+      .service('drawings')
+      .remove(id)
+      .then(() => {
+        setIsDeleting(false);
+        onSuccess(id);
+        toast({
+          title: 'Deleted',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+          position: 'top',
+        });
+      })
+      .catch((error: Error) => {
+        setIsDeleting(false);
+        toast({
+          title: error.message,
+          status: 'error',
+          duration: 9000,
+          isClosable: true,
+          position: 'top',
+        });
+      });
+  };
+
+  return { isDeleting, handleDelete };
+}
+
 type ReplayedDrawingProps = {
+  id: string;
   steps: Step[];
   username: string;
   drawTime: number;
   createdAt: number;
+  isDeletable?: boolean;
+  onDelete?: () => void;
 };
 
 export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
+  id,
   steps,
   username,
   drawTime,
   createdAt,
+  isDeletable = false,
+  onDelete = () => {},
 }) => {
+  const { isDeleting, handleDelete } = useDeleteDrawing();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -122,14 +175,28 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
   return (
     <div>
       <Box>By @{username}</Box>
+
       <Box borderWidth="1px" borderColor="black" w={400} h={400}>
         <canvas ref={canvasRef} width={400} height={400} />
       </Box>
+
       <Box>
         {format(new Date(createdAt), 'LLL do yyyy')} at{' '}
         {format(new Date(createdAt), 'HH:mm a')} in{' '}
         {drawTimeSeconds > 0 ? `${drawTimeSeconds}s` : `${drawTime}ms`}
       </Box>
+
+      {isDeletable && (
+        <Button
+          mt={2}
+          colorScheme="red"
+          variant="outline"
+          onClick={() => handleDelete(id, onDelete)}
+          isLoading={isDeleting}
+        >
+          Delete
+        </Button>
+      )}
     </div>
   );
 };
@@ -165,6 +232,7 @@ export const DrawingDetail: FunctionComponent<DrawingDetailProps> = ({
 
   return (
     <ReplayedDrawing
+      id={drawing._id}
       steps={drawing.steps}
       username={drawing.username}
       drawTime={drawing.drawTime}
@@ -174,8 +242,8 @@ export const DrawingDetail: FunctionComponent<DrawingDetailProps> = ({
 };
 
 export const DrawingsList: FunctionComponent = () => {
-  const { isAuthenticated } = useAuthContext();
-  const { isFetching, error, drawings } = useDrawingsList();
+  const { isAuthenticated, username } = useAuthContext();
+  const { isFetching, error, drawings, refetch } = useDrawingsList();
 
   if (isFetching) {
     return <Spinner size="xl" />;
@@ -205,10 +273,13 @@ export const DrawingsList: FunctionComponent = () => {
       {drawings.map((drawing) => (
         <WrapItem key={drawing._id}>
           <ReplayedDrawing
+            id={drawing._id}
             steps={drawing.steps}
             username={drawing.username}
             drawTime={drawing.drawTime}
             createdAt={drawing.createdAt}
+            isDeletable={drawing.username === username}
+            onDelete={refetch}
           />
         </WrapItem>
       ))}
