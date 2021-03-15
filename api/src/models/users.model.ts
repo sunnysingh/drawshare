@@ -6,7 +6,7 @@ export default function (app: Application): NeDB<any> {
   const dbPath = app.get('nedb');
   const Model = new NeDB({
     filename: path.join(dbPath, 'users.db'),
-    autoload: true
+    autoload: true,
   });
 
   Model.ensureIndex({ fieldName: 'email', unique: true });

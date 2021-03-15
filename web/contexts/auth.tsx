@@ -5,9 +5,9 @@ import {
   createContext,
   FunctionComponent,
   ReactNode,
-} from "react";
+} from 'react';
 
-import { api } from "api";
+import { api } from 'api';
 
 type AuthResponse = {
   accessToken: string;
@@ -26,12 +26,14 @@ type AuthResponse = {
   user: {
     _id: string;
     email: string;
+    username: string;
   };
 };
 
 type AuthContextProps = {
   isAuthenticated: boolean;
   email: string;
+  username: string;
   id: string;
 };
 
@@ -53,14 +55,16 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({
         setUser({
           isAuthenticated: true,
           email: auth.user.email,
+          username: auth.user.username,
           id: auth.user._id,
         })
       )
       .catch(() => {
         setUser({
           isAuthenticated: false,
-          email: "",
-          id: "",
+          email: '',
+          username: '',
+          id: '',
         });
       });
   }, [api, setUser]);

@@ -1,5 +1,5 @@
-import { FunctionComponent, useState } from "react";
-import { useRouter } from "next/router";
+import { FunctionComponent, useState } from 'react';
+import { useRouter } from 'next/router';
 import {
   Container,
   FormControl,
@@ -9,31 +9,32 @@ import {
   Heading,
   Alert,
   AlertDescription,
-} from "@chakra-ui/react";
-import { useFormik } from "formik";
+} from '@chakra-ui/react';
+import { useFormik } from 'formik';
 
-import { Layout } from "components";
-import { api } from "api";
+import { Layout } from 'components';
+import { api } from 'api';
 
 const RegisterPage: FunctionComponent = () => {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
+      username: '',
+      email: '',
+      password: '',
     },
     onSubmit: async (values, actions) => {
-      setError("");
+      setError('');
       await api
-        .service("users")
+        .service('users')
         .create(values)
         .then(async () => {
           await api.authenticate({
             ...values,
-            strategy: "local",
+            strategy: 'local',
           });
-          router.push("/draw");
+          router.push('/draw');
         })
         .catch((error: Error) => {
           actions.setSubmitting(false);
@@ -50,6 +51,16 @@ const RegisterPage: FunctionComponent = () => {
         </Heading>
 
         <form onSubmit={formik.handleSubmit}>
+          <FormControl id="username" mb={4}>
+            <FormLabel>Username</FormLabel>
+            <Input
+              type="text"
+              required
+              onChange={formik.handleChange}
+              value={formik.values.username}
+            />
+          </FormControl>
+
           <FormControl id="email" mb={4}>
             <FormLabel>Email</FormLabel>
             <Input

@@ -1,5 +1,5 @@
-import { FunctionComponent, ReactNode } from "react";
-import NextLink from "next/link";
+import { FunctionComponent, ReactNode } from 'react';
+import NextLink from 'next/link';
 import {
   Container,
   Box,
@@ -16,20 +16,20 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
-} from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+} from '@chakra-ui/react';
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
-import { useAuthContext } from "contexts/auth";
-import { api } from "api";
+import { useAuthContext } from 'contexts/auth';
+import { api } from 'api';
 
 const LINKS = [
   {
-    label: "Gallery",
-    href: "/",
+    label: 'Gallery',
+    href: '/',
   },
   {
-    label: "Draw",
-    href: "/draw",
+    label: 'Draw',
+    href: '/draw',
     isAuthenticatedOnly: true,
   },
 ];
@@ -44,10 +44,10 @@ const NavLink: FunctionComponent<NavLinkProps> = ({ children, href }) => (
     <Link
       px={2}
       py={1}
-      rounded={"md"}
+      rounded={'md'}
       _hover={{
-        textDecoration: "none",
-        bg: useColorModeValue("gray.200", "gray.700"),
+        textDecoration: 'none',
+        bg: useColorModeValue('gray.200', 'gray.700'),
       }}
     >
       {children}
@@ -78,41 +78,41 @@ export function Nav() {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+      <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
         <Container maxW="container.xl">
-          <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+          <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
             <IconButton
-              size={"md"}
+              size={'md'}
               icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-              aria-label={"Open Menu"}
-              display={{ md: !isOpen ? "none" : "inherit" }}
+              aria-label={'Open Menu'}
+              display={{ md: !isOpen ? 'none' : 'inherit' }}
               onClick={isOpen ? onClose : onOpen}
             />
-            <HStack spacing={8} alignItems={"center"}>
+            <HStack spacing={8} alignItems={'center'}>
               <NextLink href="/">
                 <a>Drawshare</a>
               </NextLink>
               <HStack
-                as={"nav"}
+                as={'nav'}
                 spacing={4}
-                display={{ base: "none", md: "flex" }}
+                display={{ base: 'none', md: 'flex' }}
               >
                 {LINKS.map(renderNavLink)}
               </HStack>
             </HStack>
-            <Flex alignItems={"center"}>
+            <Flex alignItems={'center'}>
               {user.isAuthenticated ? (
                 <Menu>
                   <MenuButton
                     as={Button}
-                    rounded={"full"}
-                    variant={"link"}
-                    cursor={"pointer"}
+                    rounded={'full'}
+                    variant={'link'}
+                    cursor={'pointer'}
                   >
-                    <Avatar size={"sm"} name={user.email} />
+                    <Avatar size={'sm'} name={user.email} />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>{user.email}</MenuItem>
+                    <MenuItem>@{user.username}</MenuItem>
                     <MenuItem
                       onClick={() => {
                         api.logout();
@@ -128,9 +128,9 @@ export function Nav() {
                   <NextLink href="/auth/login" passHref>
                     <Button
                       as="a"
-                      variant={"outline"}
-                      colorScheme={"teal"}
-                      size={"sm"}
+                      variant={'outline'}
+                      colorScheme={'teal'}
+                      size={'sm'}
                       mr={4}
                     >
                       Sign in
@@ -139,9 +139,9 @@ export function Nav() {
                   <NextLink href="/auth/register" passHref>
                     <Button
                       as="a"
-                      variant={"solid"}
-                      colorScheme={"teal"}
-                      size={"sm"}
+                      variant={'solid'}
+                      colorScheme={'teal'}
+                      size={'sm'}
                       mr={4}
                     >
                       Register
@@ -154,7 +154,7 @@ export function Nav() {
 
           {isOpen ? (
             <Box pb={4}>
-              <Stack as={"nav"} spacing={4}>
+              <Stack as={'nav'} spacing={4}>
                 {LINKS.map(renderNavLink)}
               </Stack>
             </Box>
