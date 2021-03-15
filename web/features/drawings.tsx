@@ -7,6 +7,7 @@ import {
   AlertDescription,
   Spinner,
 } from '@chakra-ui/react';
+import { formatDistanceToNow } from 'date-fns';
 
 import { Link } from 'components';
 import { api } from 'api';
@@ -23,7 +24,8 @@ type Step = {
 type Drawing = {
   username: string;
   steps: Step[];
-  public: boolean;
+  isPublic: boolean;
+  createdAt: number;
   _id: string;
 };
 
@@ -85,11 +87,13 @@ export function useDrawingDetail(id: string) {
 type ReplayedDrawingProps = {
   steps: Step[];
   username: string;
+  createdAt: number;
 };
 
 export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
   steps,
   username,
+  createdAt,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
@@ -112,8 +116,11 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
   return (
     <div>
       <Box>By @{username}</Box>
-      <Box borderWidth="1px" borderColor="black" w={400} h={400} mb={4}>
+      <Box borderWidth="1px" borderColor="black" w={400} h={400}>
         <canvas ref={canvasRef} width={400} height={400} />
+      </Box>
+      <Box>
+        Created {formatDistanceToNow(new Date(createdAt), { addSuffix: true })}
       </Box>
     </div>
   );
@@ -148,7 +155,13 @@ export const DrawingDetail: FunctionComponent<DrawingDetailProps> = ({
     );
   }
 
-  return <ReplayedDrawing steps={drawing.steps} username={drawing.username} />;
+  return (
+    <ReplayedDrawing
+      steps={drawing.steps}
+      username={drawing.username}
+      createdAt={drawing.createdAt}
+    />
+  );
 };
 
 export const DrawingsList: FunctionComponent = () => {
@@ -182,7 +195,11 @@ export const DrawingsList: FunctionComponent = () => {
     <Wrap spacing={4} flexWrap="wrap">
       {drawings.map((drawing) => (
         <WrapItem key={drawing._id}>
-          <ReplayedDrawing steps={drawing.steps} username={drawing.username} />
+          <ReplayedDrawing
+            steps={drawing.steps}
+            username={drawing.username}
+            createdAt={drawing.createdAt}
+          />
         </WrapItem>
       ))}
     </Wrap>
