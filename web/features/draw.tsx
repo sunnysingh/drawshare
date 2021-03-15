@@ -124,13 +124,6 @@ export const Draw: FunctionComponent = () => {
                 y: event.clientY - rect.top,
               });
             }}
-            onMouseEnter={(event: MouseEvent) => {
-              const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
-              setPosition({
-                x: event.clientX - rect.left,
-                y: event.clientY - rect.top,
-              });
-            }}
             width="400"
             height="400"
           />
