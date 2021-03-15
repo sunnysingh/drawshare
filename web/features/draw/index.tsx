@@ -27,6 +27,15 @@ import { useAuthContext } from 'contexts/auth';
 import { useSaveDrawing } from './hooks';
 import { StepItem } from './types';
 
+/**
+ * Provides a canvas drawing interface.
+ *
+ * This component is currently also tied to API functionality
+ * because it uses the `useSaveDrawing` hook to save drawings
+ * to the database. If we wanted to reuse this component in
+ * other places, we would separate out the presentation and
+ * business logic into two separate components.
+ */
 export const Draw: FunctionComponent = () => {
   const auth = useAuthContext();
   const { isSaving, save } = useSaveDrawing();
@@ -89,6 +98,15 @@ export const Draw: FunctionComponent = () => {
     context.stroke();
   };
 
+  // Sets the initial drawing position.
+  const handleMouseDown = (event: MouseEvent) => {
+    const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
+    setPosition({
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top,
+    });
+  };
+
   const handleSave = () => {
     const endTime = Number(new Date());
     const drawing = {
@@ -121,13 +139,7 @@ export const Draw: FunctionComponent = () => {
           <canvas
             ref={canvasRef}
             onMouseMove={handleMouseMove}
-            onMouseDown={(event: MouseEvent) => {
-              const rect = (event.target as HTMLCanvasElement).getBoundingClientRect();
-              setPosition({
-                x: event.clientX - rect.left,
-                y: event.clientY - rect.top,
-              });
-            }}
+            onMouseDown={handleMouseDown}
             width="400"
             height="400"
           />
