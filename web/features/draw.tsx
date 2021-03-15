@@ -44,6 +44,7 @@ export const Draw: FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null);
 
   const steps = useRef<StepItem[]>([]);
+  const startTime = useRef<number | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -71,6 +72,10 @@ export const Draw: FunctionComponent = () => {
     const toX = event.clientX - rect.left;
     const toY = event.clientY - rect.top;
 
+    if (steps.current.length === 0) {
+      startTime.current = Number(new Date());
+    }
+
     steps.current.push({
       fromX: position.x,
       fromY: position.y,
@@ -87,10 +92,12 @@ export const Draw: FunctionComponent = () => {
   };
 
   const handleSave = async () => {
+    const endTime = Number(new Date());
     const drawing = {
       username: auth.username,
       steps: steps.current,
       createdAt: Number(new Date()),
+      drawTime: endTime - (startTime.current || 0),
       isPublic,
     };
 
@@ -122,6 +129,7 @@ export const Draw: FunctionComponent = () => {
     context?.clearRect(0, 0, canvas.width, canvas.height);
 
     steps.current = [];
+    startTime.current = null;
 
     setError(null);
   };

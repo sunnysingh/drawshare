@@ -25,6 +25,7 @@ type Drawing = {
   username: string;
   steps: Step[];
   isPublic: boolean;
+  drawTime: number;
   createdAt: number;
   _id: string;
 };
@@ -93,6 +94,7 @@ type ReplayedDrawingProps = {
 export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
   steps,
   username,
+  drawTime,
   createdAt,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -113,6 +115,8 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
     });
   }, [canvasRef]);
 
+  const drawTimeSeconds = Math.floor(drawTime / 1000);
+
   return (
     <div>
       <Box>By @{username}</Box>
@@ -120,8 +124,9 @@ export const ReplayedDrawing: FunctionComponent<ReplayedDrawingProps> = ({
         <canvas ref={canvasRef} width={400} height={400} />
       </Box>
       <Box>
-        Created {format(new Date(createdAt), 'LLLL do, yyyy')} at{' '}
-        {format(new Date(createdAt), 'HH:mm a')}
+        {format(new Date(createdAt), 'LLL do yyyy')} at{' '}
+        {format(new Date(createdAt), 'HH:mm a')} in{' '}
+        {drawTimeSeconds > 0 ? `${drawTimeSeconds}s` : `${drawTime}ms`}
       </Box>
     </div>
   );
@@ -160,6 +165,7 @@ export const DrawingDetail: FunctionComponent<DrawingDetailProps> = ({
     <ReplayedDrawing
       steps={drawing.steps}
       username={drawing.username}
+      drawTime={drawing.drawTime}
       createdAt={drawing.createdAt}
     />
   );
@@ -199,6 +205,7 @@ export const DrawingsList: FunctionComponent = () => {
           <ReplayedDrawing
             steps={drawing.steps}
             username={drawing.username}
+            drawTime={drawing.drawTime}
             createdAt={drawing.createdAt}
           />
         </WrapItem>
