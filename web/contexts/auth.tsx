@@ -9,6 +9,10 @@ import {
 
 import { api } from 'api';
 
+/**
+ * Auth Context to share user data between components.
+ */
+
 type AuthResponse = {
   accessToken: string;
   authentication: {

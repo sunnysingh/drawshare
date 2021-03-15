@@ -67,6 +67,9 @@ const NavLink: FunctionComponent<NavLinkProps> = ({
   </NextLink>
 );
 
+/**
+ * Header navigation used for Layout.
+ */
 export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useAuthContext();

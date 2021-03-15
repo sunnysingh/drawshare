@@ -1,10 +1,13 @@
-import NextHead from "next/head";
-import { FunctionComponent } from "react";
+import NextHead from 'next/head';
+import { FunctionComponent } from 'react';
 
 type HeadProps = {
   title?: string;
 };
 
+/**
+ * Sets common meta tags, and allows changing title between pages.
+ */
 export const Head: FunctionComponent<HeadProps> = ({ title }) => {
   return (
     <NextHead>

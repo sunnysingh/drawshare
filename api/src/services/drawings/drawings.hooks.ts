@@ -5,6 +5,28 @@ import { Forbidden, NotAuthenticated } from '@feathersjs/errors';
 
 const { authenticate } = authentication.hooks;
 
+const validateCreate = () => async (context: HookContext) => {
+  if (!context.data.username) {
+    throw new Error('Username is required');
+  }
+
+  if (!Array.isArray(context.data.steps)) {
+    throw new Error('Steps is required and must be an array');
+  }
+
+  if (!context.data.createdAt) {
+    throw new Error('createdAt is required');
+  }
+
+  if (!context.data.drawTime) {
+    throw new Error('drawTime is required');
+  }
+
+  if (typeof context.data.isPublic !== 'boolean') {
+    throw new Error('isPublic is required');
+  }
+};
+
 /**
  * Unfortunately, all query parameters are passed in a strings.
  * We need to parse these parameters to their correct types
@@ -46,7 +68,7 @@ export default {
     all: [],
     find: [authenticate('jwt'), parseQuery()],
     get: [],
-    create: [authenticate('jwt'), setUserId()],
+    create: [authenticate('jwt'), setUserId(), validateCreate()],
     update: [authenticate('jwt'), isOwner()],
     patch: [authenticate('jwt'), isOwner()],
     remove: [authenticate('jwt'), isOwner()],

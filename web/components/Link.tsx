@@ -7,6 +7,9 @@ type LinkProps = {
   children: ReactNode;
 };
 
+/**
+ * Integrates Next.js' Link component with Chakra UI's.
+ */
 export const Link: FunctionComponent<LinkProps> = ({ href, children }) => {
   return (
     <NextLink href={href} passHref>

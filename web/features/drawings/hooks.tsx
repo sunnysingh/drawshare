@@ -3,7 +3,7 @@ import { useToast } from '@chakra-ui/react';
 
 import { api } from 'api';
 
-import { Step, Drawing } from './types';
+import { Drawing } from './types';
 
 export type DrawingsListResponse = {
   data: Drawing[];

@@ -4,6 +4,9 @@ import { Box } from '@chakra-ui/react';
 import { Link } from 'components';
 import { useAuthContext } from 'contexts/auth';
 
+/**
+ * A helper component to render children only when user is authenticated.
+ */
 export const AuthenticatedOnly: FunctionComponent = ({ children }) => {
   const { isAuthenticated } = useAuthContext();
 
