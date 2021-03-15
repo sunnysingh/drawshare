@@ -1,7 +1,7 @@
 import { FunctionComponent } from "react";
 import { Heading } from "@chakra-ui/react";
 
-import { Layout } from "components";
+import { Layout, AuthenticatedOnly } from "components";
 import { Draw } from "features/draw";
 
 const DrawPage: FunctionComponent = () => {
@@ -10,7 +10,9 @@ const DrawPage: FunctionComponent = () => {
       <Heading as="h1" size="lg" mb={4}>
         Draw
       </Heading>
-      <Draw />
+      <AuthenticatedOnly>
+        <Draw />
+      </AuthenticatedOnly>
     </Layout>
   );
 };

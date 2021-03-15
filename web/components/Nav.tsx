@@ -30,6 +30,7 @@ const LINKS = [
   {
     label: "Draw",
     href: "/draw",
+    isAuthenticatedOnly: true,
   },
 ];
 
@@ -58,6 +59,23 @@ export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const user = useAuthContext();
 
+  const renderNavLink = ({
+    href,
+    label,
+    isAuthenticatedOnly,
+  }: {
+    href: string;
+    label: string;
+    isAuthenticatedOnly?: boolean;
+  }) => {
+    if (isAuthenticatedOnly && !user.isAuthenticated) return null;
+    return (
+      <NavLink key={`${href}-${label}`} href={href}>
+        {label}
+      </NavLink>
+    );
+  };
+
   return (
     <>
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
@@ -79,11 +97,7 @@ export function Nav() {
                 spacing={4}
                 display={{ base: "none", md: "flex" }}
               >
-                {LINKS.map(({ href, label }) => (
-                  <NavLink key={`${href}-${label}`} href={href}>
-                    {label}
-                  </NavLink>
-                ))}
+                {LINKS.map(renderNavLink)}
               </HStack>
             </HStack>
             <Flex alignItems={"center"}>
@@ -141,11 +155,7 @@ export function Nav() {
           {isOpen ? (
             <Box pb={4}>
               <Stack as={"nav"} spacing={4}>
-                {LINKS.map(({ href, label }) => (
-                  <NavLink key={`${href}-${label}`} href={href}>
-                    {label}
-                  </NavLink>
-                ))}
+                {LINKS.map(renderNavLink)}
               </Stack>
             </Box>
           ) : null}
