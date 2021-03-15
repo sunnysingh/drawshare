@@ -6,8 +6,8 @@ import { DrawingsList } from 'features/drawings';
 
 const IndexPage: FunctionComponent = () => {
   return (
-    <Layout title="Home">
-      <Heading mb={4}>Welcome to Drawshare</Heading>
+    <Layout title="Gallery">
+      <Heading mb={4}>The Drawshare Gallery</Heading>
       <Box mb={8}>Check out some recent public drawings from our artists.</Box>
       <DrawingsList />
     </Layout>
