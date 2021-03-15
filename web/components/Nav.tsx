@@ -19,6 +19,9 @@ import {
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 
+import { useAuthContext } from "contexts/auth";
+import { api } from "api";
+
 const LINKS = [
   {
     label: "Home",
@@ -49,6 +52,7 @@ const NavLink: FunctionComponent<NavLinkProps> = ({ children, href }) => (
 
 export function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const user = useAuthContext();
 
   return (
     <>
@@ -77,30 +81,54 @@ export function Nav() {
               </HStack>
             </HStack>
             <Flex alignItems={"center"}>
-              <NextLink href="/auth/register" passHref>
-                <Button
-                  as="a"
-                  variant={"solid"}
-                  colorScheme={"teal"}
-                  size={"sm"}
-                  mr={4}
-                >
-                  Register
-                </Button>
-              </NextLink>
-              {/* <Menu>
-              <MenuButton
-                as={Button}
-                rounded={"full"}
-                variant={"link"}
-                cursor={"pointer"}
-              >
-                <Avatar size={"sm"} name="Sunny Singh" />
-              </MenuButton>
-              <MenuList>
-                <MenuItem>Sign out</MenuItem>
-              </MenuList>
-            </Menu> */}
+              {user.isAuthenticated ? (
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rounded={"full"}
+                    variant={"link"}
+                    cursor={"pointer"}
+                  >
+                    <Avatar size={"sm"} name={user.email} />
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem>{user.email}</MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        api.logout();
+                        location.reload();
+                      }}
+                    >
+                      Sign out
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              ) : (
+                <>
+                  <NextLink href="/auth/login" passHref>
+                    <Button
+                      as="a"
+                      variant={"outline"}
+                      colorScheme={"teal"}
+                      size={"sm"}
+                      mr={4}
+                    >
+                      Sign in
+                    </Button>
+                  </NextLink>
+                  <NextLink href="/auth/register" passHref>
+                    <Button
+                      as="a"
+                      variant={"solid"}
+                      colorScheme={"teal"}
+                      size={"sm"}
+                      mr={4}
+                    >
+                      Register
+                    </Button>
+                  </NextLink>
+                </>
+              )}
             </Flex>
           </Flex>
 

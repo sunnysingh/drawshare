@@ -15,7 +15,7 @@ import { useFormik } from "formik";
 import { Layout } from "components";
 import { api } from "api";
 
-const RegisterPage: FunctionComponent = () => {
+const Loginpage: FunctionComponent = () => {
   const router = useRouter();
   const [error, setError] = useState("");
   const formik = useFormik({
@@ -25,28 +25,31 @@ const RegisterPage: FunctionComponent = () => {
     },
     onSubmit: async (values, actions) => {
       setError("");
-      await api
-        .service("users")
-        .create(values)
-        .then(async () => {
-          await api.authenticate({
+      try {
+        // Log in with existing JWT
+        await api.reAuthenticate();
+      } catch (error) {
+        await api
+          .authenticate({
             ...values,
             strategy: "local",
+          })
+          .then(() => {
+            router.push("/dashboard");
+          })
+          .catch((error: Error) => {
+            actions.setSubmitting(false);
+            setError(error.message);
           });
-          router.push("/dashboard");
-        })
-        .catch((error: Error) => {
-          actions.setSubmitting(false);
-          setError(error.message);
-        });
+      }
     },
   });
 
   return (
-    <Layout title="Register">
+    <Layout title="Sign in">
       <Container>
         <Heading as="h1" size="lg" mb={4}>
-          Create an account
+          Sign in to Drawshare
         </Heading>
 
         <form onSubmit={formik.handleSubmit}>
@@ -77,7 +80,7 @@ const RegisterPage: FunctionComponent = () => {
           )}
 
           <Button type="submit" isLoading={formik.isSubmitting}>
-            Register
+            Sign in
           </Button>
         </form>
       </Container>
@@ -85,4 +88,4 @@ const RegisterPage: FunctionComponent = () => {
   );
 };
 
-export default RegisterPage;
+export default Loginpage;

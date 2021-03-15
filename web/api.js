@@ -5,7 +5,14 @@ const api = feathers();
 
 const restClient = rest("http://localhost:3030");
 
-api.configure(feathers.authentication());
+api.configure(
+  feathers.authentication({
+    // IMPORTANT: For the sake of convenience, we store the authentication
+    // token in localStorage. However, there are far more secure options
+    // such as using an Secure (SSL) and HTTP-only cookie.
+    storage: typeof window !== "undefined" ? window.localStorage : undefined,
+  })
+);
 
 api.configure(restClient.fetch(fetch));
 

@@ -1,5 +1,5 @@
 {
-  "name": "create-next-example-app",
+  "name": "web",
   "scripts": {
     "dev": "next",
     "start": "next",
