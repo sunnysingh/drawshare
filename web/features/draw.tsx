@@ -9,7 +9,8 @@ import {
 import {
   Box,
   Button,
-  HStack,
+  Wrap,
+  WrapItem,
   Alert,
   AlertDescription,
   FormControl,
@@ -126,8 +127,8 @@ export const Draw: FunctionComponent = () => {
   };
 
   return (
-    <HStack spacing={8} align="flex-start">
-      <Box>
+    <Wrap spacing={8} align="flex-start">
+      <WrapItem display="block">
         <Box mb={4} w="400px" borderWidth="2px" borderColor="black">
           <canvas
             ref={canvasRef}
@@ -185,9 +186,13 @@ export const Draw: FunctionComponent = () => {
             </Button>
           </>
         )}
-      </Box>
+      </WrapItem>
 
-      {context && <HexColorPicker color={color} onChange={setColor} />}
-    </HStack>
+      {context && (
+        <WrapItem>
+          <HexColorPicker color={color} onChange={setColor} />
+        </WrapItem>
+      )}
+    </Wrap>
   );
 };
