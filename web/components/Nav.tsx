@@ -25,17 +25,17 @@ import { api } from 'api';
 
 const LINKS = [
   {
-    label: 'Gallery',
+    label: 'Public Gallery',
     href: '/',
   },
   {
-    label: 'Create',
-    href: '/draw',
+    label: 'Secret Collection',
+    href: '/private',
     isAuthenticatedOnly: true,
   },
   {
-    label: 'Private Drawings',
-    href: '/private',
+    label: 'Create A Drawing',
+    href: '/draw',
     isAuthenticatedOnly: true,
   },
 ];

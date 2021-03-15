@@ -8,6 +8,7 @@ const PrivateDrawingsPage: FunctionComponent = () => {
   return (
     <Layout title="Your Private Drawings">
       <Heading mb={4}>Your Private Drawings</Heading>
+      <Box mb={8}>Some things the world is not ready for yet.</Box>
       <DrawingsList isPublic={false} />
     </Layout>
   );
