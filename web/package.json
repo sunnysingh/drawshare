@@ -2,9 +2,8 @@
   "name": "web",
   "scripts": {
     "dev": "next",
-    "start": "next",
+    "start": "next start",
     "build": "next build",
-    "start-production": "next start",
     "clean": "rm -rf .next"
   },
   "dependencies": {
