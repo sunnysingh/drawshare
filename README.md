@@ -2,6 +2,8 @@
 
 Drawshare is an app for sharing sketches.
 
+> 🧪 **Experimental**: This project is not meant to be deployed to production, and is simply a learning exercise.
+
 ## 🚀 Run the app
 
 **Prerequisites**: Node.js v14
@@ -35,7 +37,7 @@ The frontend was built with [React](https://reactjs.org/) and [Next.js](https://
 
 ## Frontend
 
-Major parts of the file structure:
+Located in the `web` directory. Major parts of the file structure:
 
 ```
 .
@@ -62,9 +64,11 @@ The messiest part of the codebase is the [`<Draw>` component](./web/features/dra
 
 To save extra development time, data fetching was done via the [Feathers Client](https://docs.feathersjs.com/api/client.html#node). This could be drammatically improved in terms of security by not persisting the authentication token (JWT) to localStorage. Instead, the JWT should be stored in a secure HTTP-only cookie. [React Query](https://react-query.tanstack.com/) could also be used here to add caching and simplify state management of data.
 
+Also while I attempted to write components to be testable (mainly by abstracting logic to hooks), actually writing tests with [Jest](https://jestjs.io/) and [Testing Library](https://testing-library.com/) would probably uncover more issues that would help improve the codebase.
+
 ## Backend
 
-Major parts of the file structure:
+Located in the `api` directory.  Major parts of the file structure:
 
 ```
 .
