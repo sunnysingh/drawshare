@@ -131,8 +131,8 @@ export function Nav() {
                   <MenuList>
                     <MenuItem>@{user.username}</MenuItem>
                     <MenuItem
-                      onClick={() => {
-                        api.logout();
+                      onClick={async () => {
+                        await api.logout();
                         location.reload();
                       }}
                     >
