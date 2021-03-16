@@ -16,9 +16,7 @@ const DrawDetailPage: FunctionComponent = () => {
         A Drawing
       </Heading>
       <Box mb={4}>Share this drawing with someone! It's a unique URL.</Box>
-      <AuthenticatedOnly>
-        <DrawingDetail id={id} />
-      </AuthenticatedOnly>
+      <DrawingDetail id={id} />
     </Layout>
   );
 };
