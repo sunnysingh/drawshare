@@ -97,3 +97,123 @@ Major parts of the stack:
 This stack works well to develop a quick MVP, but is missing common requirements of APIs such as an access control system. I implemented some basic validation and ownership checks which you can see in the [users hooks](./api/src/services/users/users.hooks.ts) and [drawings hooks](./api/src/services/drawings/drawings.hooks.ts).
 
 I would implement a role-based system using [feathers-permissions](https://github.com/feathersjs-ecosystem/feathers-permissions) and add unit tests to ensure that future code changes would not break security of the API.
+
+### API Endpoints
+
+All endpoints are RESTful and respond with a 200 status code on success, or 201 status code on successfully created entities. See the [Feathers Services Docs](https://docs.feathersjs.com/api/services.html) for more, as well as the `api/src/services` directory.
+
+#### Create User
+
+- URL: `http://localhost:3030/users`
+- Method: `POST`
+- JSON Payload:
+```json
+{
+    "email": "sunny@example.com",
+    "password": "test",
+    "username": "sunny"
+}
+```
+
+#### Authenticate
+
+- URL: `http://localhost:3030/authentication`
+- Method: `POST`
+- JSON Payload:
+```json
+{
+    "email": "sunny@example.com",
+    "password": "test",
+    "strategy": "local"
+}
+```
+
+#### Create Drawing
+
+- URL: `http://localhost:3030/drawings`
+- Method: `POST`
+- JSON Payload:
+```json
+{
+    "username": "sunny",
+    "steps": [
+        {
+            "fromX":24,
+            "fromY":60,
+            "toX":28,
+            "toY":73,
+            "color":"#000000",
+            "strokeWidth":5
+        }
+    ],
+    "createdAt":1615901840380,
+    "drawTime":4138,
+    "isPublic":true
+}
+```
+
+#### Delete Drawing
+
+- URL: `http://localhost:3030/drawings/<ID>`
+- Method: `DELETE`
+
+#### Get Drawing Detail
+
+- URL: `http://localhost:3030/drawings/<ID>`
+- Method: `GET`
+- JSON Response:
+```json
+{
+    "username": "sunny",
+    "steps": [
+    {
+        "fromX": 24,
+        "fromY": 60,
+        "toX": 28,
+        "toY": 73,
+        "color": "#000000",
+        "strokeWidth": 5
+    }
+    ],
+    "createdAt": 1615862444911,
+    "drawTime": 1518,
+    "isPublic": true,
+    "userId": "n9bq8CtYrvK48ZyK",
+    "_id": "bJd3ixeRSXIPcwf6"
+}
+```
+
+#### Get Drawings List
+
+Refer to [Feathers Querying Docs](https://docs.feathersjs.com/api/databases/querying.html#querying) for more complex queries.
+
+- URL: `http://localhost:3030/drawings?isPublic=true`
+- Method: `GET`
+- JSON Response:
+```json
+{
+  "total": 1,
+  "limit": 10,
+  "skip": 0,
+  "data": [
+    {
+      "username": "sunny",
+      "steps": [
+        {
+          "fromX": 24,
+          "fromY": 60,
+          "toX": 28,
+          "toY": 73,
+          "color": "#000000",
+          "strokeWidth": 5
+        }
+      ],
+      "createdAt": 1615862444911,
+      "drawTime": 1518,
+      "isPublic": true,
+      "userId": "n9bq8CtYrvK48ZyK",
+      "_id": "bJd3ixeRSXIPcwf6"
+    }
+  ]
+}
+```
