@@ -4,6 +4,12 @@ Drawshare is an app for sharing sketches.
 
 > 🧪 **Experimental**: This project is not meant to be deployed to production, and is simply a learning exercise.
 
+## 📸 App screenshots
+
+![Gallery](./homepage.png)
+
+![Draw](./draw.png)
+
 ## 🚀 Run the app
 
 **Prerequisites**: Node.js v14
